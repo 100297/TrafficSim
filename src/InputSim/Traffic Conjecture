@@ -1,0 +1,4 @@
+N Always = S
+E always = W
+
+if EW = TRUE, than NS = false
