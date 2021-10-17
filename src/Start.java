@@ -26,6 +26,8 @@ public class Start extends JPanel implements Runnable{
 	long startTime = System.currentTimeMillis();
 	int removedCars = 0;
 	int longestWaitTime = 0;
+	public ArrayList<Integer> waitTimesCompiled = new ArrayList<Integer>();
+	
 	public Start() {
 		for(int i = 0; i<8; i++) {
 			lanes.add(new Lane(0,0));
@@ -135,16 +137,22 @@ public class Start extends JPanel implements Runnable{
 	}
 
 	public void analyzeData(Graphics g) {
+		
 		int timeElapsed = (int)(System.currentTimeMillis()-startTime);
 		//double secElapsed = timeElapsed/1000;
 		if(timer == 2000) {
 			ticsPerSecString = (double)timer/timeElapsed+" Tics per Second";
 		}
-		System.out.println(timer);
+		//System.out.println(timer);
 		double rateCarsPassed = (double)removedCars/timer;
 		g.drawString(ticsPerSecString, 750, 40);
 		g.drawString("Rate of Cars: "+rateCarsPassed, 750, 80);
 		g.drawString("Longest Wait Time: "+longestWaitTime, 750, 120);
+		if(timer == 80000) {
+			for(int val: waitTimesCompiled) {
+				System.out.print(val+" ");
+			}
+		}
 	}
 
 	public void laneSetup(Graphics2D g) {
@@ -187,19 +195,36 @@ public class Start extends JPanel implements Runnable{
 	
 	public void addCar() {
 
-		Random r = new Random();
-		int loc = r.nextInt(12);
+		//Random r = new Random();
+		//int loc = r.nextInt(12);
 		ArrayList<Double> randoms = new ArrayList<Double>();
-		for (int i = 0; i < 12; i++) {
-			randoms.add(Math.random());
-		}
-	/*	double max = 0;
-		int winner = -1;
+		//for (int i = 0; i < 12; i++) {
+		//	randoms.add(Math.random());
+		//}
+		
+		randoms.add(Math.random()); //0
+		randoms.add(Math.random()); //1
+		randoms.add(Math.random()); //2
+		randoms.add(Math.random()); //3
+		randoms.add(Math.random()); //4
+		randoms.add(Math.random()); //5
+		randoms.add(Math.random()); //6
+		randoms.add(Math.random()); //7
+		randoms.add(Math.random()); //8
+		randoms.add(Math.random()); //9
+		randoms.add(Math.random()); //10
+		randoms.add(Math.random()); //11
+		
+		double max = 0;
+		int loc = -1;
 		for(int i = 0; i<randoms.size(); i++) {
-			if(max<d) {max = d;}
-			winner = 
+			if(max<randoms.get(i)) {
+				max = randoms.get(i);
+				loc = i;
+			}
+			
 		}
-	*/	
+		
 		int xCord = 0;
 		int yCord = 0;
 		String dir = "";
@@ -291,6 +316,8 @@ public class Start extends JPanel implements Runnable{
 	public void removeOutOfBounds() {
 		for(int i = 0; i<cars.size(); i++) {
 			if(cars.get(i).getX()>1100 || cars.get(i).getX()<-100 || cars.get(i).getY()>1100 || cars.get(i).getY()<-100) {
+				if(timer>5000) {waitTimesCompiled.add(cars.get(i).waitTime);}
+				
 				cars.remove(i);
 				removedCars++;
 			}
@@ -309,7 +336,7 @@ public class Start extends JPanel implements Runnable{
 				switchStateTimer = 0;
 			}
 			
-			if(switchStateTimer >=10) {
+			if(switchStateTimer >=1000) {
 				isTransitioning = true;
 			}
 		} else {

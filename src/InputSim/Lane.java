@@ -13,6 +13,6 @@ public class Lane {
 	}
 	
 	public int getScore() {
-		return (1*numCars)+(1*timer);
+		return (1*numCars);
 	}
 }
