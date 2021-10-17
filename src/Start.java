@@ -13,7 +13,19 @@ public class Start extends JPanel implements Runnable{
 	TrafficController trafficController = new TrafficController();
 	ArrayList<Lane> lanes = new ArrayList<Lane>();
 	int timer = 0;
-	ArrayList<Point> points;
+	//this is just a small timer that keeps track of transition time and states.
+	int switchStateTimer = 0;
+	int transitionTimer = 0;
+	ArrayList<ArrayList<Point>> points;
+	ArrayList<Point> blockers;
+	ArrayList<Point> greenLights;
+	boolean isTransitioning = false;
+	
+	//Data display variables (doesnt have anything to do with the running of the program)
+	String ticsPerSecString = "Calculating...";
+	long startTime = System.currentTimeMillis();
+	int removedCars = 0;
+	int longestWaitTime = 0;
 	public Start() {
 		for(int i = 0; i<8; i++) {
 			lanes.add(new Lane(0,0));
@@ -28,16 +40,17 @@ public class Start extends JPanel implements Runnable{
 		repaint();
 		Graphics2D g2 = (Graphics2D) g;
 		laneSetup(g2);
-		
 		trafficController.processLights(cars, lanes);
-		if(timer == 4000) {
-			trafficController.stopCars();
-		}
-		if(timer == 6000) {
-			points = trafficController.calculateMode(lanes);
-			timer = 0;
-		}
 		
+		lightSwitchTimer();
+		
+		if(isTransitioning) {
+			transitionTimer++;
+			transitionLights();
+		} else {transitionTimer = 0;}
+		
+			analyzeData(g);
+			
 			Point p = new Point(1);
 			g.drawString(lanes.get(0).getScoreString(0)+"", (int)p.x, (int)p.y);
 		
@@ -70,6 +83,10 @@ public class Start extends JPanel implements Runnable{
 				double nextYSpot = (c.getY())+(50*Math.sin(c.angle));
 				boolean canMove = true;
 				c.waitTime++;
+				
+				if(timer>25000 && longestWaitTime<c.waitTime) {
+					longestWaitTime = c.waitTime;
+				}
 				for(Car c2: cars) {
 					double testCarX = c2.getX();
 					double textCarY = c2.getY();
@@ -78,11 +95,16 @@ public class Start extends JPanel implements Runnable{
 					}
 				}
 				if(points != null) {
-					for(Point point: points) {
+					for(Point point: blockers) {
 						if(distance(nextXSpot, nextYSpot, point.x, point.y)<=45) {
 							canMove = false;
 						}
 					}
+					g.setColor(Color.green);
+					for(Point point: greenLights) {
+						g.fillOval((int)point.x, (int)point.y, 30, 30);
+					}
+					g.setColor(Color.black);
 				}
 				if(canMove == false) {continue;}
 				if(c.x>300 && c.x<700 && c.y>300 && c.y<700) {
@@ -110,6 +132,19 @@ public class Start extends JPanel implements Runnable{
 		
 		removeOutOfBounds();
 		
+	}
+
+	public void analyzeData(Graphics g) {
+		int timeElapsed = (int)(System.currentTimeMillis()-startTime);
+		//double secElapsed = timeElapsed/1000;
+		if(timer == 2000) {
+			ticsPerSecString = (double)timer/timeElapsed+" Tics per Second";
+		}
+		System.out.println(timer);
+		double rateCarsPassed = (double)removedCars/timer;
+		g.drawString(ticsPerSecString, 750, 40);
+		g.drawString("Rate of Cars: "+rateCarsPassed, 750, 80);
+		g.drawString("Longest Wait Time: "+longestWaitTime, 750, 120);
 	}
 
 	public void laneSetup(Graphics2D g) {
@@ -154,6 +189,17 @@ public class Start extends JPanel implements Runnable{
 
 		Random r = new Random();
 		int loc = r.nextInt(12);
+		ArrayList<Double> randoms = new ArrayList<Double>();
+		for (int i = 0; i < 12; i++) {
+			randoms.add(Math.random());
+		}
+	/*	double max = 0;
+		int winner = -1;
+		for(int i = 0; i<randoms.size(); i++) {
+			if(max<d) {max = d;}
+			winner = 
+		}
+	*/	
 		int xCord = 0;
 		int yCord = 0;
 		String dir = "";
@@ -246,8 +292,64 @@ public class Start extends JPanel implements Runnable{
 		for(int i = 0; i<cars.size(); i++) {
 			if(cars.get(i).getX()>1100 || cars.get(i).getX()<-100 || cars.get(i).getY()>1100 || cars.get(i).getY()<-100) {
 				cars.remove(i);
+				removedCars++;
 			}
 		}
 	}
+	
+	//this runs every tick (all the time)
+	public void lightSwitchTimer(){
+		
+		int lane1 = trafficController.greenLane1;
+		int lane2 = trafficController.greenLane2;
+		if(lane1 != -1 && lane2 != -1) {
+			if(lanes.get(lane1).numCars+lanes.get(lane2).numCars == 0) {
+				switchStateTimer++;
+			} else {
+				switchStateTimer = 0;
+			}
+			
+			if(switchStateTimer >=10) {
+				isTransitioning = true;
+			}
+		} else {
+			points = trafficController.calculateMode(lanes);
+			blockers = points.get(0);
+			greenLights = points.get(1);
+		}
+		
+		
+		
+		/* if(timer == 4000) {
+			points = trafficController.stopCars();
+			blockers = points.get(0);
+			greenLights = points.get(1);
+		}
+		if(timer == 6000) {
+			points = trafficController.calculateMode(lanes);
+			blockers = points.get(0);
+			greenLights = points.get(1);
+			timer = 0;
+		} */
+		
+	}
+	//changes light from green to yellow to green (at a new mode)
+	public void transitionLights(){
+		if(transitionTimer == 1) {
+			points = trafficController.stopCars();
+			blockers = points.get(0);
+			greenLights = points.get(1);
+		}
+		if(transitionTimer == 3500) {
+			points = trafficController.calculateMode(lanes);
+			blockers = points.get(0);
+			greenLights = points.get(1);
+			//timer = 0;
+			isTransitioning = false;
+			transitionTimer = 0;
+		}
+		
+	}
+	
 	
 }
