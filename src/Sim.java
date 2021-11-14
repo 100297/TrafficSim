@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.JFrame;
@@ -10,7 +11,10 @@ public class Sim extends JFrame{
 		setSize(width, height);
 		Start start = new Start();
 		((Component)start).setFocusable(true);
+		//getContentPane().setBackground(new Color(140,140,140));
 		getContentPane().add(start);
+		
+		//setIgnoreRepaint(true);
 		setVisible(true);
 	}
 	

@@ -1,4 +1,6 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 
 public class Car {
@@ -93,9 +95,14 @@ public class Car {
 	}
 	
 	public void draw(Graphics2D g) {
-		//g.setColor(Color.RED);
-		g.drawRect((int)x, (int)y, width, height);
-		g.drawString(""+waitTime/60, (int)x, (int)y);
+		
+		g.setColor(Color.RED);
+		g.fillRoundRect((int)x, (int)y, width, height, 18, 18);
+		g.setColor(Color.BLACK);
+		g.setStroke(new BasicStroke(4));
+		g.drawRoundRect((int)x, (int)y, width, height, 18, 18);
+		g.setStroke(new BasicStroke(1));
+		g.drawString(""+waitTime/60, (int)x+15, (int)y+22);
 	}
 	
 	public double getX() {

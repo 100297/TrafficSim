@@ -1,6 +1,8 @@
+import java.awt.BasicStroke;
 import java.awt.Canvas;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
@@ -52,31 +54,31 @@ public class Start extends JPanel implements Runnable{
 		} else {transitionTimer = 0;}
 		
 			analyzeData(g);
-			
+			g.setColor(Color.WHITE);
 			Point p = new Point(1);
-			g.drawString(lanes.get(0).getScoreString(0)+"", (int)p.x, (int)p.y);
+			g.drawString(lanes.get(0).getScoreString(0)+"", (int)p.x-25, (int)p.y-16);
 		
 			p = new Point(2);
-			g.drawString(lanes.get(1).getScoreString(1)+"", (int)p.x, (int)p.y);
+			g.drawString(lanes.get(1).getScoreString(1)+"", (int)p.x-25, (int)p.y-16);
 
 			p = new Point(4);
-			g.drawString(lanes.get(2).getScoreString(2)+"", (int)p.x, (int)p.y);
+			g.drawString(lanes.get(2).getScoreString(2)+"", (int)p.x, (int)p.y+3);
 			
 			p = new Point(5);
-			g.drawString(lanes.get(3).getScoreString(3)+"", (int)p.x, (int)p.y);
+			g.drawString(lanes.get(3).getScoreString(3)+"", (int)p.x, (int)p.y+3);
 			
 			p = new Point(7);
-			g.drawString(lanes.get(4).getScoreString(4)+"", (int)p.x, (int)p.y);
+			g.drawString(lanes.get(4).getScoreString(4)+"", (int)p.x-25, (int)p.y+25);
 			
 			p = new Point(8);
-			g.drawString(lanes.get(5).getScoreString(5)+"", (int)p.x, (int)p.y);
+			g.drawString(lanes.get(5).getScoreString(5)+"", (int)p.x-25, (int)p.y+25);
 			
 			p = new Point(10);
-			g.drawString(lanes.get(6).getScoreString(6)+"", (int)p.x, (int)p.y);
+			g.drawString(lanes.get(6).getScoreString(6)+"", (int)p.x-60, (int)p.y+3);
 			
 			p = new Point(11);
-			g.drawString(lanes.get(7).getScoreString(7)+"", (int)p.x, (int)p.y);
-			
+			g.drawString(lanes.get(7).getScoreString(7)+"", (int)p.x-60, (int)p.y+3);
+			g.setColor(Color.black);
 		trafficController.draw(g2);
 		//this loop moves the cars then draws
 		for(Car c: cars) {
@@ -92,21 +94,16 @@ public class Start extends JPanel implements Runnable{
 				for(Car c2: cars) {
 					double testCarX = c2.getX();
 					double textCarY = c2.getY();
-					if(distance(nextXSpot, nextYSpot, testCarX, textCarY)<=45) {
+					if(distance(nextXSpot, nextYSpot, testCarX, textCarY)<=25) {
 						canMove = false;
 					}
 				}
 				if(points != null) {
 					for(Point point: blockers) {
-						if(distance(nextXSpot, nextYSpot, point.x, point.y)<=45) {
+						if(distance(nextXSpot, nextYSpot, point.x, point.y)<=5) {
 							canMove = false;
 						}
 					}
-					g.setColor(Color.green);
-					for(Point point: greenLights) {
-						g.fillOval((int)point.x, (int)point.y, 30, 30);
-					}
-					g.setColor(Color.black);
 				}
 				if(canMove == false) {continue;}
 				if(c.x>300 && c.x<700 && c.y>300 && c.y<700) {
@@ -125,8 +122,23 @@ public class Start extends JPanel implements Runnable{
 				}
 				
 			}
+		}
+		
+		for(Car c: cars) {
 			c.draw(g2);
 		}
+		
+		g2.setColor(Color.red);
+		for(Point point: blockers) {
+			g2.fillOval((int)point.x-15, (int)point.y-15, 30, 30);
+		}
+		g2.setColor(Color.green);
+		for(Point point: greenLights) {
+			g2.fillOval((int)point.x-15, (int)point.y-15, 30, 30);
+		}
+		g2.setColor(Color.black);
+		
+		
 		if(timer%800 == 0) {
 			addCar();
 		}
@@ -145,9 +157,14 @@ public class Start extends JPanel implements Runnable{
 		}
 		//System.out.println(timer);
 		double rateCarsPassed = (double)removedCars/timer;
-		g.drawString(ticsPerSecString, 750, 40);
-		g.drawString("Rate of Cars: "+rateCarsPassed, 750, 80);
-		g.drawString("Longest Wait Time: "+longestWaitTime, 750, 120);
+		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+		g.setColor(Color.WHITE);
+		g.drawString("Data:", 720, 40);
+		g.drawString(ticsPerSecString, 720, 70);
+		g.drawString("Rate of Cars: "+rateCarsPassed, 720, 100);
+		g.drawString("Longest Wait Time: "+longestWaitTime, 720, 130);
+		g.setColor(Color.black);
+		g.setFont(new Font(Font.SERIF, Font.PLAIN, 11));
 		if(timer == 80000) {
 			for(int val: waitTimesCompiled) {
 				System.out.print(val+" ");
@@ -156,10 +173,25 @@ public class Start extends JPanel implements Runnable{
 	}
 
 	public void laneSetup(Graphics2D g) {
-		g.drawRect(300, 300, 400, 400);
+		//fancy background stuff
+		g.setColor(new Color(150,150,150));
+		g.fillRect(0, 0, 1000, 1000);
+		g.setColor(new Color(50,125,50));
+		g.fillRect(0, 0, 300, 300);
+		g.fillRect(0, 700, 300, 300);
+		g.fillRect(700, 0, 300, 300);
+		g.fillRect(700, 700, 300, 300);
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 30));
+		g.drawString("Traffic Light Sim", 30, 140);
 		
-		g.drawLine(0, 300, 300, 300);
-		g.drawLine(300, 0, 300, 300);
+		g.setColor(Color.BLACK);
+		g.setStroke(new BasicStroke(10));
+		g.drawRect(300, 300, 400, 400);
+		g.setStroke(new BasicStroke(7));
+		
+		g.drawLine(0, 300, 300, 300); 
+		g.drawLine(300, 0, 300, 300); 
 		
 		g.drawLine(700, 1000, 700, 700);
 		g.drawLine(1000, 700, 700, 700);
@@ -170,6 +202,7 @@ public class Start extends JPanel implements Runnable{
 		g.drawLine(0, 700, 300, 700);
 		g.drawLine(300, 1000, 300, 700);
 		
+		g.setStroke(new BasicStroke(3));
 		g.drawLine(380, 0, 380, 300);
 		g.drawLine(460, 0, 460, 300);
 		g.drawLine(620, 0, 620, 300);
@@ -186,11 +219,16 @@ public class Start extends JPanel implements Runnable{
 		g.drawLine(540, 700, 540, 1000);
 		g.drawLine(620, 700, 620, 1000);
 		
-		g.setColor(Color.BLUE);
+		
+		g.setColor(new Color(0,0,100));
+		g.setStroke(new BasicStroke(7));
 		g.drawLine(0, 460, 300, 460);
 		g.drawLine(540, 0, 540, 300);
 		g.drawLine(700, 540, 1000, 540);
 		g.drawLine(460, 700, 460, 1000);
+		
+		g.setStroke(new BasicStroke(1));
+		g.setColor(Color.BLACK);
 	}
 	
 	public void addCar() {

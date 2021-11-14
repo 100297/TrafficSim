@@ -15,7 +15,7 @@ public class TrafficController {
 	
 	public void draw(Graphics2D g) {
 		for(TrafficLight tf: trafficLights) {
-			tf.draw(g);
+			//tf.draw(g);
 			
 		}	
 	}
