@@ -10,13 +10,19 @@ public class Car {
 	double y;
 	String direction;
 	double angle;
+	double speed;
 	int positionNum;
 	int waitTime = 0;
+	double accelerationSpeed;
+	int reactionTime;
 	public Car(int x, int y, String direction, int pos) {
 		this.x = x;
 		this.y = y;
+		this.speed = 1;
 		this.direction = direction;
 		this.positionNum = pos;
+		this.reactionTime = 0;
+		this.accelerationSpeed = (Math.random()/4000)+.01;
 		switch(direction) {
 			case "up":
 				angle = Math.PI*1.5;
@@ -36,62 +42,43 @@ public class Car {
 	}
 	
 	public void move() {
-			x+=Math.cos(angle);
-			y+=Math.sin(angle);
+			if(speed == 0 && reactionTime<100) {
+				reactionTime++;
+				return;
+			}
+			if(speed < 2) {
+				speed+=accelerationSpeed;
+			}
+		
+			x+=Math.cos(angle)*speed;
+			y+=Math.sin(angle)*speed;
 		}
 	public void turnLeft() {
-		angle-=0.005;
+		angle-=0.005*speed;
 		switch( direction ){
 			case "up":
-				x+=Math.cos(angle);
-				y+=Math.sin(angle);
-				y-=.3;
+				move();
+				y-=.2546*speed;
 				break;
 			case "down":
-				x+=Math.cos(angle);
-				y+=Math.sin(angle);
-				y+=.25;
+				move();
+				y+=.2546*speed;
 				break;
 			case "right":
-				x+=Math.cos(angle);
-				y+=Math.sin(angle);
-				x+=.2;
+				move();
+				x+=.2546*speed;
 				break;
 			case "left":
-				x+=Math.cos(angle);
-				y+=Math.sin(angle);
-				x-=.3;
+				move();
+				x-=.2546*speed;
 				break;
 			default:
 				break;
 		}
 	}
 	public void turnRight() {
-		angle+=0.018;
-		switch( direction ){
-			case "up":
-				x+=Math.cos(angle);
-				y+=Math.sin(angle);
-				break;
-			case "down":
-				x+=Math.cos(angle);
-				y+=Math.sin(angle);
-				angle+=.03;
-				break;
-			case "right":
-				x+=Math.cos(angle);
-				y+=Math.sin(angle);
-				x-=.4;
-				y+=.1;
-				break;
-			case "left":
-				x+=Math.cos(angle);
-				y+=Math.sin(angle);
-				angle+=.025;
-				break;
-			default:
-				break;
-		}
+		angle+=0.025*speed;
+		move();
 	}
 	
 	public void draw(Graphics2D g) {
