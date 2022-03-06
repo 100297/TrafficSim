@@ -19,20 +19,16 @@ public class Start extends JPanel implements Runnable, ActionListener {
 	public void paint(Graphics g) {
 		super.paint(g);
 		timer++;
-		repaint();
+		// repaint();
 		Graphics2D g2 = (Graphics2D) g;
 		setup(g);
 		
-		if(timer%3000 == 0) {
-			cars.add(new Car(0, 500));
+		if(timer%500 == 1) {
+			cars.add(new Car(50, 500));
 		}
 		
-		if(timer%1000 == 0) {
-			long diff = System.currentTimeMillis()-startTime;
-			//System.out.println((double)diff/timer);
-		}
 		
-		if(timer%5 == 0) {
+		if(timer%2 == 0) {
 			processCars(g);
 		}
 		
@@ -60,12 +56,14 @@ public class Start extends JPanel implements Runnable, ActionListener {
 //			
 //			}
 //		}
-		System.out.println(stopperOn);
+		if(timer%5000 == 0) {stopperOn = true;}
+		
+		System.out.println(timer);
 		for(int i = 0; i<cars.size(); i++) {
 			for(int j = 0; j<cars.size(); j++) {
 				if(i!=j && cars.get(i).x <= cars.get(j).x && isCollided(cars.get(i).x, cars.get(j).x)) {
 					cars.get(i).stop();
-				} else if(stopperOn == false && isCollided(cars.get(i).x, 1000)){
+				} else if( stopperOn == false && (isCollided(cars.get(i).x, 800) || isCollided(cars.get(i).x, 1400) ) ){
 					cars.get(i).stop();
 				}else {
 					cars.get(i).move();
@@ -89,7 +87,7 @@ public class Start extends JPanel implements Runnable, ActionListener {
 	public void run() {
 		try {
 			while (true) {
-				Thread.currentThread().sleep(100);
+				Thread.currentThread().sleep(10);
 				repaint();
 			}
 		} catch (Exception e) {
