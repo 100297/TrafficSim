@@ -60,28 +60,28 @@ public class Start extends JPanel implements Runnable {
 		analyzeData(g);
 		g.setColor(Color.WHITE);
 		Point p = new Point(1);
-		g.drawString(lanes.get(0).getScoreString(0) + "", (int) p.x - 25, (int) p.y - 16);
+	//	g.drawString(lanes.get(0).getScoreString(0) + "", (int) p.x - 25, (int) p.y - 16);
 
 		p = new Point(2);
-		g.drawString(lanes.get(1).getScoreString(1) + "", (int) p.x - 25, (int) p.y - 16);
+	//	g.drawString(lanes.get(1).getScoreString(1) + "", (int) p.x - 25, (int) p.y - 16);
 
 		p = new Point(4);
-		g.drawString(lanes.get(2).getScoreString(2) + "", (int) p.x, (int) p.y + 3);
+	//	g.drawString(lanes.get(2).getScoreString(2) + "", (int) p.x, (int) p.y + 3);
 
 		p = new Point(5);
-		g.drawString(lanes.get(3).getScoreString(3) + "", (int) p.x, (int) p.y + 3);
+	//	g.drawString(lanes.get(3).getScoreString(3) + "", (int) p.x, (int) p.y + 3);
 
 		p = new Point(7);
-		g.drawString(lanes.get(4).getScoreString(4) + "", (int) p.x - 25, (int) p.y + 25);
+	//	g.drawString(lanes.get(4).getScoreString(4) + "", (int) p.x - 25, (int) p.y + 25);
 
 		p = new Point(8);
-		g.drawString(lanes.get(5).getScoreString(5) + "", (int) p.x - 25, (int) p.y + 25);
+	//	g.drawString(lanes.get(5).getScoreString(5) + "", (int) p.x - 25, (int) p.y + 25);
 
 		p = new Point(10);
-		g.drawString(lanes.get(6).getScoreString(6) + "", (int) p.x - 60, (int) p.y + 3);
+	//	g.drawString(lanes.get(6).getScoreString(6) + "", (int) p.x - 60, (int) p.y + 3);
 
 		p = new Point(11);
-		g.drawString(lanes.get(7).getScoreString(7) + "", (int) p.x - 60, (int) p.y + 3);
+	//	g.drawString(lanes.get(7).getScoreString(7) + "", (int) p.x - 60, (int) p.y + 3);
 		g.setColor(Color.black);
 		trafficController.draw(g2);
 		// this loop moves the cars then draws
@@ -163,10 +163,10 @@ public class Start extends JPanel implements Runnable {
 		double rateCarsPassed = (double) removedCars / timer;
 		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
 		g.setColor(Color.WHITE);
-		g.drawString("Data:", 720, 40);
-		g.drawString(ticsPerSecString, 720, 70);
-		g.drawString("Rate of Cars: " + rateCarsPassed, 720, 100);
-		g.drawString("Longest Wait Time: " + longestWaitTime, 720, 130);
+	//	g.drawString("Data:", 720, 40);
+	//	g.drawString(ticsPerSecString, 720, 70);
+	//	g.drawString("Rate of Cars: " + rateCarsPassed, 720, 100);
+	//	g.drawString("Longest Wait Time: " + longestWaitTime, 720, 130);
 		g.setColor(Color.black);
 		g.setFont(new Font(Font.SERIF, Font.PLAIN, 11));
 		if (timer == 80000) {

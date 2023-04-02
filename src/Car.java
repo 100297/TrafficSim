@@ -2,12 +2,20 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Car {
+	public static BufferedImage Buffer;
+	
 	int width = 40;
 	int height = 40;
 	double x;
 	double y;
+	int i = 0;
 	String direction;
 	double angle;
 	double speed;
@@ -23,6 +31,12 @@ public class Car {
 		this.positionNum = pos;
 		this.reactionTime = 0;
 		this.accelerationSpeed = (Math.random()/4000)+.01;
+		try {
+		Buffer = ImageIO.read(this.getClass().getResourceAsStream("CarImage.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		switch(direction) {
 			case "up":
 				angle = Math.PI*1.5;
@@ -82,14 +96,30 @@ public class Car {
 	}
 	
 	public void draw(Graphics2D g) {
+
+		//AffineTransform identity = new AffineTransform();
+		//AffineTransform trans = new AffineTransform();
+		//trans.setTransform(identity);
+		//trans.rotate( Math.toRadians(angle) );
+		//trans.translate(-x, -y);
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.rotate(angle, (int)(x+(1/2*width)), (int)(y+(1/2*height))); //centerX and centerY is your center of rotation.
+		//g2d.setTransform(trans);
+		g2d.drawImage(Buffer, (int)x, (int)y, (int) (width), height,null);
+		g2d.setColor(Color.BLACK);
+		g2d.drawString(""+waitTime/60, (int)x+15, (int)y+22);
+		g2d.rotate(-angle, (int)(x+(1/2*width)),(int)(y+(1/2*height))); //centerX and centerY is your center of rotation.
+		//	trans.rotate(Math.toRadians(-27));
+//		trans.translate(0, 0);
+	//	g2d.setTransform(trans);
+//		g2d.setColor(Color.RED);
+	//	g.fillRoundRect((int)x, (int)y, width, height, 18, 18);
 		
-		g.setColor(Color.RED);
-		g.fillRoundRect((int)x, (int)y, width, height, 18, 18);
-		g.setColor(Color.BLACK);
-		g.setStroke(new BasicStroke(4));
-		g.drawRoundRect((int)x, (int)y, width, height, 18, 18);
-		g.setStroke(new BasicStroke(1));
-		g.drawString(""+waitTime/60, (int)x+15, (int)y+22);
+//		g.setStroke(new BasicStroke(4));
+//		g.drawRoundRect((int)x, (int)y, width, height, 18, 18);
+//		g.setStroke(new BasicStroke(1));
+
+
 	}
 	
 	public double getX() {
