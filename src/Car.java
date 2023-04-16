@@ -68,6 +68,12 @@ public class Car {
 			y+=Math.sin(angle)*speed;
 		}
 	public void turnLeft() {
+		if(angle == Math.PI*1.5 ) {
+			y+=60;
+		}
+		if(angle == Math.PI/2) {
+			y+=42;
+		}
 		angle-=0.005*speed;
 		switch( direction ){
 			case "up":
@@ -91,12 +97,29 @@ public class Car {
 		}
 	}
 	public void turnRight() {
+		if(angle == Math.PI) {
+			x += 46;
+		}
+		if(angle == 0) {
+			x+=30;
+		}
 		angle+=0.025*speed;
 		move();
 	}
 	
 	public void draw(Graphics2D g) {
-
+		if(angle == Math.PI*1.5 ) {
+			direction = "up";
+		}
+		if(angle == Math.PI/2) {
+		direction = "down";
+		}
+		if(angle == 0 ) {
+		direction = "right";
+		}
+		if(angle == Math.PI) {
+			direction = "left";
+		}
 		//AffineTransform identity = new AffineTransform();
 		//AffineTransform trans = new AffineTransform();
 		//trans.setTransform(identity);
@@ -105,9 +128,23 @@ public class Car {
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.rotate(angle, (int)(x+(1/2*width)), (int)(y+(1/2*height))); //centerX and centerY is your center of rotation.
 		//g2d.setTransform(trans);
-		g2d.drawImage(Buffer, (int)x, (int)y, (int) (width), height,null);
-		g2d.setColor(Color.BLACK);
-		g2d.drawString(""+waitTime/60, (int)x+15, (int)y+22);
+		if(direction.equals("down") ) {
+			g2d.drawImage(Buffer, (int)x, (int)y-50, (int) (width), height,null);
+			g2d.setColor(Color.BLACK);
+			g2d.drawString(""+waitTime/60, (int)x+15, (int)y-28);
+		} 
+		else if(direction.equals("left")) {
+			g2d.drawImage(Buffer, (int)x, (int)y-40, (int) (width), height,null);
+			g2d.setColor(Color.BLACK);
+			g2d.drawString(""+waitTime/60, (int)x+15, (int)y+-18);
+		}
+		else {
+			
+			g2d.drawImage(Buffer, (int)x, (int)y, (int) (width), height,null);
+			g2d.setColor(Color.BLACK);
+			g2d.drawString(""+waitTime/60, (int)x+15, (int)y+22);
+		}
+
 		g2d.rotate(-angle, (int)(x+(1/2*width)),(int)(y+(1/2*height))); //centerX and centerY is your center of rotation.
 		//	trans.rotate(Math.toRadians(-27));
 //		trans.translate(0, 0);
